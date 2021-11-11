@@ -13,8 +13,8 @@ typedef struct node{
 	struct node *next;
 } node_t;			//node_t as node data structure type	
 	
-node_t *head = NULL;		//global to have 1 argument for: add,delete,sort_list,print_list @alternative: use static
-node_t *last_node = NULL;	//global to have 1 argument for: add,delete,sort_list,print_list @alternative: use static
+node_t *head = NULL;		//global to have 1 argument for: add,delete,sort_list,print_list 
+node_t *last_node = NULL;	//global to have 1 argument for: add,delete,sort_list,print_list 
 
 
 
@@ -185,12 +185,46 @@ void print_list(void)
 
 
 	
-void *sync_routine(void *args)			//wait to create all threads before executing 
-{
-	printf("Waiting at the barrier...\n");
+void *sync_routine(void *arg)			//wait to create all threads before executing 
+{	
+	int internal_tid = *(int*) arg;
+	printf("Waiting at the barrier... Thread no: %d\n", internal_tid+1);
 	pthread_barrier_wait(&barrier);
-	printf("We passed the barrier !\n");
-
+	printf("\n");
+	printf("We passed the barrier ! Thread no: %d\n", internal_tid+1);
+	
+	switch(internal_tid)
+	{
+		case 0:
+			add(2);
+			add(4);
+			add(10);
+			delete(2);
+			sort_list();
+			delete(10);
+			delete(5);	
+			break;
+	
+		case 1:
+			add(11);
+			add(1);
+			delete(11);
+			add(8);
+			print_list();
+			break;
+			
+		case 2:
+			add(30);
+			add(25);
+			add(100);
+			sort_list();
+			print_list();
+			delete(100);
+			break;
+			
+	}
+	
+	free(arg);
 }
 
 
@@ -203,7 +237,9 @@ int main()
 	pthread_barrier_init(&barrier, NULL, NUM_THREADS);
 	
 	for (i = 0; i < NUM_THREADS; i++) {
-		if (pthread_create(&th[i], NULL, &sync_routine, NULL) != 0) {
+		int *a = malloc(sizeof(int));
+		*a = i;
+		if (pthread_create(&th[i], NULL, &sync_routine, a) != 0) {
 			perror("Failed to create thread!\n");
 		}
 	}
