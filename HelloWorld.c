@@ -3,6 +3,9 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#define NUM_THREADS 3
+
+pthread_barrier_t barrier;	//threads sync using barrier
 
 typedef struct node{
 	int val;
@@ -10,8 +13,8 @@ typedef struct node{
 	struct node *next;
 } node_t;			//node_t as node data structure type	
 	
-node_t *head = NULL;		//global to have 1 argument for: add and del @alternative: use as static
-node_t *last_node = NULL;	//global to have 1 argument for: add and del @alternative: use as static
+node_t *head = NULL;		//global to have 1 argument for: add,delete,sort_list,print_list @alternative: use static
+node_t *last_node = NULL;	//global to have 1 argument for: add,delete,sort_list,print_list @alternative: use static
 
 
 
@@ -20,8 +23,6 @@ void print_int(int element)
 {
 	printf("%d ", element);
 }
-
-
 
 
 void add(int value)
@@ -157,6 +158,7 @@ void flush_list(void)
 
 
 
+
 void print_list(void)
 {	
 	
@@ -183,21 +185,38 @@ void print_list(void)
 
 
 	
+void *sync_routine(void *args)			//wait to create all threads before executing 
+{
+	printf("Waiting at the barrier...\n");
+	pthread_barrier_wait(&barrier);
+	printf("We passed the barrier !\n");
+
+}
+
+
+
+
 int main()
 {
-
-	add(7);
-	add(10);
-	add(11);
-	add(1);
-	delete(10);
+	pthread_t th[NUM_THREADS-1];
+	int i = 0;
+	pthread_barrier_init(&barrier, NULL, NUM_THREADS);
 	
-	print_list();
-	sort_list();
-	print_list();
-	flush_list();
-	print_list();
+	for (i = 0; i < NUM_THREADS; i++) {
+		if (pthread_create(&th[i], NULL, &sync_routine, NULL) != 0) {
+			perror("Failed to create thread!\n");
+		}
+	}
 	
+	for (i = 0; i < NUM_THREADS; i++) {
+		if (pthread_join(th[i], NULL) != 0) {
+			perror("Failed to join thread!\n");
+		}
+	}
+	
+	pthread_barrier_destroy(&barrier);
+	
+	return 0;
 }
 
 
