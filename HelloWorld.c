@@ -5,7 +5,8 @@
 
 #define NUM_THREADS 3
 
-pthread_barrier_t barrier;	//threads sync using barrier
+pthread_barrier_t barrier;	//threads sync for creation using barrier
+
 
 typedef struct node{
 	int val;
@@ -13,8 +14,8 @@ typedef struct node{
 	struct node *next;
 } node_t;			//node_t as node data structure type	
 	
-node_t *head = NULL;		//global to have 1 argument for: add,delete,sort_list,print_list 
-node_t *last_node = NULL;	//global to have 1 argument for: add,delete,sort_list,print_list 
+node_t *head = NULL;		//global to have 1 argument for: add,delete,sort_list,print_list -> POSSIBLE NOT THREAD-SAFE
+node_t *last_node = NULL;	//global to have 1 argument for: add,delete,sort_list,print_list -> POSSIBLE NOT THREAD-SAFE
 
 
 
@@ -35,13 +36,13 @@ void add(int value)
 	
 	new_node->next = NULL;
 	new_node->val = value;
-	new_node->callback = print_int;		//set function pointer
+	new_node->callback = print_int;		        //set function pointer
 	if (NULL != last_node){				//link new_node with last node if linked list is not empty
 		last_node->next = new_node;
 	}
 	
 	if (NULL == head){			
-		head = new_node;			//set first node as head if linked list is empty
+		head = new_node;		//set first node as head if linked list is empty !!!NOT THREAD SAFE!!!
 	}
 	
 	last_node = new_node;
@@ -68,20 +69,19 @@ void delete(int value)
 		count_element++;
 		if (temp->val == value)
 		{
-			printf("Deleting Node no. %d with value: %d\n",count_element,value);
+			printf("Node no.%d with value: %d deleted!\n",count_element,value);
 			previous_node->next = temp->next;
 			free(temp);
-			
-			flag_delete = 1;
+			return;			//deleting only 1 node (first found) if multiple nodes have the same value
 		}
 		
-		if (1 == flag_delete)	break;		//deleting only 1 node (first found) if multiple nodes have the same value
+		
 		previous_node = temp;
 		temp = temp->next;
 	}
 	
 	if (0 == flag_delete){
-		printf("Searched node doesn't exist!\n");
+		printf("Node with value: %d doesn't exist!\n",value);
 	}
 
 }
@@ -99,14 +99,17 @@ void swap(node_t *a, node_t *b)			//used for sort_list
 
 void sort_list(void)					//bubble sort
 {
-	int swapped, i;
+	int swapped = 0;
 	node_t *ptr2 = NULL;
 	node_t *ptr1 = malloc(sizeof(node_t));
 	if (NULL == ptr1){
 		printf("Memory allocation for previous_node failed! (sort_list)\n");
 	}
 	
-	if (NULL == head)	return;		//exit if linked list is empty
+	if (NULL == head){
+		printf("Linked list is empty, nothing to sort!\n");
+		return;				//exit if linked list is empty
+	}
 	
 	do
 	{
@@ -133,7 +136,8 @@ void sort_list(void)					//bubble sort
 
 void flush_list(void)
 {
-	node_t *temp, *cursor = malloc(sizeof(node_t));
+	node_t *temp = malloc(sizeof(node_t));
+	node_t *cursor = malloc(sizeof(node_t));
 	if(temp || cursor == NULL){
 		printf("Memory allocation failed! (flush_list)\n");
 	}
@@ -164,10 +168,10 @@ void print_list(void)
 	
 	node_t *temp = head;
 
-	printf("Printing linked list ... \n");
+	printf("Printing linked list: ");
 	
 	if (NULL == head){				//check if list is empty to prevent seg fault
-		printf("List is empty !!! Add new elements.\n");
+		printf("List is empty!!! Add new elements.\n");
 		return;
 	}
 	
@@ -185,13 +189,14 @@ void print_list(void)
 
 
 	
-void *sync_routine(void *arg)			//wait to create all threads before executing 
+void *sync_routine(void *arg)				
 {	
 	int internal_tid = *(int*) arg;
 	printf("Waiting at the barrier... Thread no: %d\n", internal_tid+1);
-	pthread_barrier_wait(&barrier);
+	pthread_barrier_wait(&barrier);					//wait to create all threads before executing 
 	printf("\n");
-	printf("We passed the barrier ! Thread no: %d\n", internal_tid+1);
+	printf("We passed the barrier! Thread no: %d\n", internal_tid+1);
+	
 	
 	switch(internal_tid)
 	{
@@ -202,7 +207,7 @@ void *sync_routine(void *arg)			//wait to create all threads before executing
 			delete(2);
 			sort_list();
 			delete(10);
-			delete(5);	
+			delete(5);
 			break;
 	
 		case 1:
@@ -214,9 +219,9 @@ void *sync_routine(void *arg)			//wait to create all threads before executing
 			break;
 			
 		case 2:
-			add(30);
-			add(25);
-			add(100);
+			add(30);		
+			add(25);			
+			add(100);			
 			sort_list();
 			print_list();
 			delete(100);
@@ -225,6 +230,7 @@ void *sync_routine(void *arg)			//wait to create all threads before executing
 	}
 	
 	free(arg);
+	return 0;
 }
 
 
@@ -251,6 +257,11 @@ int main()
 	}
 	
 	pthread_barrier_destroy(&barrier);
+	
+	printf("\n----------------------------\nThreads executions finished!\n");
+	print_list();
+	flush_list();
+	print_list();
 	
 	return 0;
 }
