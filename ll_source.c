@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include "ll_API.h"
 
+int (*callback_validate)(void *data) = NULL;    //Validate data type; set by user
 void print_int(int element) 
 {
 	printf("%d ", element);
 }
 
-int validate(ll_t *list, void *name)    //VALIDATE HEAD
+int validate(ll_t *list, void *name)    //VALIDATE HEAD list
 {   
 	if (list->head == NULL) {
 		printf("Linked list is empty! (%s)\n", (const char*)name);
@@ -21,7 +22,13 @@ void ll_create(ll_t* list)
 	printf("Creating linked list ...");
 	list->head = NULL;
 	list->last_node = NULL;
+	list->print_val = ptr_print_val;
 	printf(" Created.\n"); 
+}
+
+void ll_set_data_validation_callback(int *(ptr_callback_validate)(void *data))
+{
+	callback_validate = ptr_callback_validate;
 }
 
 void ll_add_end(ll_t *list, int value)
