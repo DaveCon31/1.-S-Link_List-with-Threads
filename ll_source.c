@@ -64,11 +64,8 @@ void ll_delete(ll_t *list, void *value)
 	node_t *previous_node = NULL;
 	
 	if (list->head->val == value) {
-		node_t *front = list->head;
-		list->head = list->head->next;
-		front->next = NULL;
-		free(front);
-		list->last_node = list->head;
+		list->head = temp->next;
+		free(temp);
 		//printf("Node head with value: %d deleted!\n",value);
 		return;
 	}
