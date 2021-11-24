@@ -2,7 +2,7 @@
 #define ll_API
 
 typedef struct node {
-	int val;
+	void *val;
 	struct node *next;
 } node_t;    //node_t as node data type	
 
