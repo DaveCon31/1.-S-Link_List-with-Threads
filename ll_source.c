@@ -26,7 +26,7 @@ void ll_create(ll_t* list, void (*ptr_print_val)(void *val))
 	printf(" Created.\n"); 
 }
 
-void ll_set_data_validation_callback(int *(ptr_callback_validate)(void *data))
+void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data))
 {
 	callback_validate = ptr_callback_validate;
 }
