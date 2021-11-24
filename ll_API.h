@@ -14,14 +14,11 @@ typedef struct list {
 
 //set validation data for input
 // callback should return 0 for success and -1 for failure
-void ll_set_data_validation_callback(int (*_callback_validate)(void *data));
+void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data));
 
 //initialize linked list with last_node & head = NULL
 //MUST BE CALLED FOR EVERY NEW LIST CREATED OTHERWISE SEGFAULT
 void ll_create(ll_t *list, void (*print_val)(void *val));
-
-//function for callback to print int elements
-void print_int(void *element);
 
 //function for callback_validate to validate head node
 int validate(ll_t *list, void *name);    
