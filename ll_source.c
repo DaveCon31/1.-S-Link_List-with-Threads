@@ -31,16 +31,21 @@ void ll_set_data_validation_callback(int *(ptr_callback_validate)(void *data))
 	callback_validate = ptr_callback_validate;
 }
 
-void ll_add_end(ll_t *list, int value)
+void ll_add_end(ll_t *list, void *value)
 {	
 	printf("add function has been called!!!	");
+	
+	if (callback_validate != NULL) {
+		if (callback_validate(value) != 0)
+			return;
+	}
+	
 	node_t *new_node = malloc(sizeof(node_t));	
 	if (new_node == NULL) {
 		printf("Memory allocation for new_node failed! (add) \n");
 	}
 	new_node->next = NULL;
 	new_node->val = value;
-	new_node->callback = print_int;    //set function pointer
 	
 	if (list->head == NULL) {			
 		list->head = new_node;    //set first node as head if linked list is empty
@@ -53,7 +58,7 @@ void ll_add_end(ll_t *list, int value)
 	printf("Node with value: %d added!\n",value);
 }
 
-void ll_delete(ll_t *list, int value)
+void ll_delete(ll_t *list, void *value)
 {	
 	printf("delete function has been called!!!	");
 	if (callback_validate(list, "delete") == -1) {    //VALIDATE WITH CALLBACK		
