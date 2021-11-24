@@ -55,7 +55,6 @@ void ll_add_end(ll_t *list, void *value)
 	}
 	
 	list->last_node = new_node;
-	printf("Node with value: %d added!\n",value);
 }
 
 void ll_delete(ll_t *list, void *value)
@@ -74,14 +73,14 @@ void ll_delete(ll_t *list, void *value)
 		front->next = NULL;
 		free(front);
 		list->last_node = list->head;
-		printf("Node head with value: %d deleted!\n",value);
+		//printf("Node head with value: %d deleted!\n",value);
 		return;
 	}
 	
 	while (temp != NULL) {
 		count_element++;
 		if (temp->val == value) {
-			printf("Node no.%d with value: %d deleted!\n",count_element,value);
+			//printf("Node no.%d with value: %d deleted!\n",count_element,value);
 			previous_node->next = temp->next;
 			free(temp);
 			flag_delete = 1;
@@ -94,13 +93,13 @@ void ll_delete(ll_t *list, void *value)
 	}
 	
 	if (flag_delete == 0) {
-		printf("Node with value: %d doesn't exist!\n",value);
+		//printf("Node with value: %d doesn't exist!\n",value);
 	}
 }
 
 void swap(node_t *a, node_t *b)    //used for sort_list
 {
-	int temp = a->val;
+	void *temp = a->val;
 	a->val = b->val;
 	b->val = temp;
 }
@@ -157,7 +156,7 @@ void ll_print_list(ll_t *list)
 	
 	node_t *temp = list->head;
 	while (temp != NULL) {
-		temp->callback(temp->val);    //use function pointer	
+		list->print_val(temp->val);    //use function pointer	
 		temp = temp->next;
 		if (temp != NULL) {
 			printf(" ---> ");
