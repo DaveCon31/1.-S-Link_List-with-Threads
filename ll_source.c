@@ -7,7 +7,6 @@ void print_int(int element)
 	printf("%d ", element);
 }
 
-
 int validate(ll_t *list, void *name)    //VALIDATE HEAD
 {   
 	if (list->head == NULL) {
@@ -17,7 +16,6 @@ int validate(ll_t *list, void *name)    //VALIDATE HEAD
 	return 0;
 }		
 
-
 void ll_create(ll_t* list) 
 {
 	printf("Creating linked list ...");
@@ -25,7 +23,6 @@ void ll_create(ll_t* list)
 	list->last_node = NULL;
 	printf(" Created.\n"); 
 }
-
 
 void ll_add_end(ll_t *list, int value)
 {	
@@ -48,7 +45,6 @@ void ll_add_end(ll_t *list, int value)
 	list->last_node = new_node;
 	printf("Node with value: %d added!\n",value);
 }
-
 
 void ll_delete(ll_t *list, int value)
 {	
@@ -90,14 +86,12 @@ void ll_delete(ll_t *list, int value)
 	}
 }
 
-
 void swap(node_t *a, node_t *b)    //used for sort_list
 {
 	int temp = a->val;
 	a->val = b->val;
 	b->val = temp;
 }
-
 
 void ll_sort_list(ll_t *list)    //bubble sort
 {
@@ -126,7 +120,6 @@ void ll_sort_list(ll_t *list)    //bubble sort
 	printf("Linked list has been sorted! \n");
 }
 
-
 void ll_flush_list(ll_t *list)
 {
 	if (callback_validate(list, "flush_list") == -1) {    //VALIDATE WITH CALLBACK
@@ -141,7 +134,6 @@ void ll_flush_list(ll_t *list)
 	}
 	printf("Linked list has been deleted!\n");
 }
-
 
 void ll_print_list(ll_t *list)
 {	

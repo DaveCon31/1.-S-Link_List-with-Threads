@@ -12,7 +12,9 @@ typedef struct list {
 	node_t *last_node;
 } ll_t;    //ll_t as linked list data type    
 
-int (*callback_validate)(ll_t *list, void *name);    //VALIDATE HEAD 
+//set validation data for input
+// callback should return 0 for success and -1 for failure
+void ll_set_data_validation_callback(int (*_callback_validate)(void *data));
 
 //initialize linked list with last_node & head = NULL
 //MUST BE CALLED FOR EVERY NEW LIST CREATED OTHERWISE SEGFAULT
