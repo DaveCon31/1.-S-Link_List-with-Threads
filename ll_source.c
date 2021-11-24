@@ -8,7 +8,7 @@ void print_int(int element)
 	printf("%d ", element);
 }
 
-int validate(ll_t *list, void *name)    //VALIDATE HEAD list
+int validate_head(ll_t *list, void *name)    //VALIDATE HEAD list
 {   
 	if (list->head == NULL) {
 		printf("Linked list is empty! (%s)\n", (const char*)name);
@@ -61,7 +61,7 @@ void ll_add_end(ll_t *list, void *value)
 void ll_delete(ll_t *list, void *value)
 {	
 	printf("delete function has been called!!!	");
-	if (callback_validate(list, "delete") == -1) {    //VALIDATE WITH CALLBACK		
+	if (validate_head(list, "delete") == -1) {    //VALIDATE WITH CALLBACK		
 		return;    
 	}
 	node_t *temp = list->head;
@@ -111,7 +111,7 @@ void ll_sort_list(ll_t *list)    //bubble sort
 	int swapped;
 	node_t *ptr2 = NULL;
 	node_t *ptr1;    //NULL?!
-	if (callback_validate(list, "sort_list") == -1) {    //VALIDATE WITH CALLBACK
+	if (validate_head(list, "sort_list") == -1) {    //VALIDATE WITH CALLBACK
 			return;
 	}
 	
@@ -134,7 +134,7 @@ void ll_sort_list(ll_t *list)    //bubble sort
 
 void ll_flush_list(ll_t *list)
 {
-	if (callback_validate(list, "flush_list") == -1) {    //VALIDATE WITH CALLBACK
+	if (validate_head(list, "flush_list") == -1) {    //VALIDATE WITH CALLBACK
 		return;
 	}
 	
@@ -151,7 +151,7 @@ void ll_print_list(ll_t *list)
 {	
 	printf("print_list function has been called!!!	");
 	printf("Printing linked list: ");
-	if (callback_validate(list, "print_list") == -1) {    //VALIDATE WITH CALLBACK
+	if (validate_head(list, "print_list") == -1) {    //VALIDATE WITH CALLBACK
 		return;
 	}
 	
