@@ -21,16 +21,16 @@ void ll_set_data_validation_callback(int (*_callback_validate)(void *data));
 void ll_create(ll_t *list);
 
 //function for callback to print int elements
-void print_int(int element);
+void print_int(void *element);
 
 //function for callback_validate to validate head node
 int validate(ll_t *list, void *name);    
 		
 //adds a node at the end of the list with a value
-void ll_add_end(ll_t *list, int value);
+void ll_add_end(ll_t *list, void *value);
 
 //removes the node with a value
-void ll_delete(ll_t *list, int value);
+void ll_delete(ll_t *list, void *value);
 
 //sorting the list using bubble sort algorithm
 void ll_sort_list(ll_t *list);
