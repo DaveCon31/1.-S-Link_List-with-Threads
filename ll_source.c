@@ -17,7 +17,7 @@ int validate(ll_t *list, void *name)    //VALIDATE HEAD list
 	return 0;
 }		
 
-void ll_create(ll_t* list) 
+void ll_create(ll_t* list, void (*ptr_print_val)(void *val)) 
 {
 	printf("Creating linked list ...");
 	list->head = NULL;
