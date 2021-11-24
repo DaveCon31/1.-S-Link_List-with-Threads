@@ -23,6 +23,21 @@ int validation_fn(void *data)
 	return 0;
 }
 
+void print_int(void *element)
+{
+	printf("%d ", *(int *)element);
+}
+
+void print_float(void *element)
+{
+	printf("%f ", *(float *)element);
+}
+
+void print_double(void *element)
+{
+	printf("%lf ", *(double *)element);
+}
+
 void *sync_routine(void *arg)				
 {	
 	ll_t l1, l2, l3;
@@ -41,57 +56,33 @@ void *sync_routine(void *arg)
 	
 	switch(internal_tid) {
 		case 0:
-			ll_create(&l1);
-			ll_delete(&l1, 2);
-			ll_sort_list(&l1);
-			ll_flush_list(&l1);
-			ll_print_list(&l1);
+			ll_create(&l1, print_int);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_add_end(&l1, 2);
-			ll_print_list(&l1);
-			ll_add_end(&l1, 4);
-			ll_print_list(&l1);
-			ll_add_end(&l1, 10);
-			ll_print_list(&l1);
-			ll_delete(&l1, 2);
-			ll_print_list(&l1);
-			ll_sort_list(&l1);
-			ll_print_list(&l1);
-			ll_delete(&l1, 10);
-			ll_print_list(&l1);
-			ll_delete(&l1, 5);
+			ll_add_end(&l1, *(int){2});
+			ll_add_end(&l1, *(int){4});
+			
 			ll_print_list(&l1);
 			ll_flush_list(&l1);
 			ll_print_list(&l1);
 			break;
 			
 		case 1:
-			ll_create(&l2);
+			ll_create(&l2, print_float);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_add_end(&l2, 11);
-			ll_print_list(&l2);
-			ll_add_end(&l2, 1);
-			ll_print_list(&l2);
-			ll_delete(&l2, 11);
-			ll_print_list(&l2);
-			ll_add_end(&l2, 8);
+			ll_add_end(&l2, *(float){11.0001});
+			ll_add_end(&l2, *(float){1.18});
+			
 			ll_print_list(&l2);
 			ll_flush_list(&l2);
 			ll_print_list(&l2);
 			break;
 		
 		case 2:
-			ll_create(&l3);
+			ll_create(&l3, print_double);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_add_end(&l3, 30);
-			ll_print_list(&l3);
-			ll_add_end(&l3, 25);
-			ll_print_list(&l3);
-			ll_add_end(&l3, 100);
-			ll_print_list(&l3);
-			ll_sort_list(&l3);
-			ll_print_list(&l3);
-			ll_delete(&l3, 100);
+			ll_add_end(&l3, *(double){30.123215671231});
+			ll_add_end(&l3, *(double){25821.12341});
+			
 			ll_print_list(&l3);
 			ll_flush_list(&l3);
 			ll_print_list(&l3);
