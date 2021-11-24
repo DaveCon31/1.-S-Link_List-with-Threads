@@ -21,7 +21,7 @@ void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data));
 void ll_create(ll_t *list, void (*print_val)(void *val));
 
 //function for callback_validate to validate head node
-int validate(ll_t *list, void *name);    
+int validate_head(ll_t *list, void *name);    
 		
 //adds a node at the end of the list with a value
 void ll_add_end(ll_t *list, void *value);
