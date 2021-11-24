@@ -9,7 +9,19 @@ pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 pthread_barrier_t barrier;					//threads sync for creation using barrier
 int current = 0;
-//int (*callback_validate)(void *name);    //VALIDATE HEAD
+
+int validation_fn(void *data) 
+{
+	int int_data = *(int*)data;
+	
+	if (int_data < 0)
+		return -1;
+	
+	if (int_data > 9999)
+		return -1;
+		
+	return 0;
+}
 
 void *sync_routine(void *arg)				
 {	
