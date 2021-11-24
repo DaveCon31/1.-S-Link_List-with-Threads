@@ -3,13 +3,13 @@
 
 typedef struct node {
 	int val;
-	void (*callback)(int);    //argument type can be used as void* for generic type
 	struct node *next;
 } node_t;    //node_t as node data type	
 
 typedef struct list {
 	node_t *head;
 	node_t *last_node;
+	void (*print_val)(void *val);
 } ll_t;    //ll_t as linked list data type    
 
 //set validation data for input
