@@ -18,7 +18,7 @@ void ll_set_data_validation_callback(int (*_callback_validate)(void *data));
 
 //initialize linked list with last_node & head = NULL
 //MUST BE CALLED FOR EVERY NEW LIST CREATED OTHERWISE SEGFAULT
-void ll_create(ll_t *list);
+void ll_create(ll_t *list, void (*print_val)(void *val));
 
 //function for callback to print int elements
 void print_int(void *element);
