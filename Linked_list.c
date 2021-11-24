@@ -60,6 +60,7 @@ void *sync_routine(void *arg)
 			printf("\nThread: %d ===================== \n",internal_tid+1);
 			ll_add_end(&l1, &(int){2});
 			ll_add_end(&l1, &(int){4});
+			ll_delete(&l1, &(int){2});
 			
 			ll_print_list(&l1);
 			ll_flush_list(&l1);
@@ -71,6 +72,7 @@ void *sync_routine(void *arg)
 			printf("\nThread: %d ===================== \n",internal_tid+1);
 			ll_add_end(&l2, &(float){11.0001});
 			ll_add_end(&l2, &(float){1.18});
+			ll_delete(&l2, &(float){1.18});
 			
 			ll_print_list(&l2);
 			ll_flush_list(&l2);
@@ -82,6 +84,7 @@ void *sync_routine(void *arg)
 			printf("\nThread: %d ===================== \n",internal_tid+1);
 			ll_add_end(&l3, &(double){30.123215671231});
 			ll_add_end(&l3, &(double){25821.12341});
+			ll_delete(&l3, &(double){30.123215671231});
 			
 			ll_print_list(&l3);
 			ll_flush_list(&l3);
