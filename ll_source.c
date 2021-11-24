@@ -3,10 +3,6 @@
 #include "ll_API.h"
 
 int (*callback_validate)(void *data) = NULL;    //Validate data type; set by user
-void print_int(int element) 
-{
-	printf("%d ", element);
-}
 
 int validate_head(ll_t *list, void *name)    //VALIDATE HEAD list
 {   
