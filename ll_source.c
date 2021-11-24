@@ -50,6 +50,9 @@ void ll_add_end(ll_t *list, void *value)
 		list->last_node->next = new_node;    //link new_node with last node if linked list is not empty
 	}
 	
+	printf("Node with value: ");
+	list->print_val(new_node->val);
+	printf(" added!\n");
 	list->last_node = new_node;
 }
 
@@ -66,14 +69,19 @@ void ll_delete(ll_t *list, void *value)
 	if (list->head->val == value) {
 		list->head = temp->next;
 		free(temp);
-		//printf("Node head with value: %d deleted!\n",value);
+		printf("Node head with value: ");
+		list->print_val(temp->val); 
+		printf("deleted!\n");
 		return;
 	}
 	
 	while (temp != NULL) {
 		count_element++;
 		if (temp->val == value) {
-			//printf("Node no.%d with value: %d deleted!\n",count_element,value);
+			printf("Node no.%d ",count_element);
+			printf("with value: ");
+			list->print_val(temp->val); 
+			printf("deleted!\n");
 			previous_node->next = temp->next;
 			free(temp);
 			flag_delete = 1;
@@ -86,7 +94,9 @@ void ll_delete(ll_t *list, void *value)
 	}
 	
 	if (flag_delete == 0) {
-		//printf("Node with value: %d doesn't exist!\n",value);
+		printf("Node head with value: ");
+		list->print_val(value); 
+		printf("doesn't exist!\n");
 	}
 }
 
