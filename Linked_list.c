@@ -72,6 +72,7 @@ void print_double(void *element)
 void *sync_routine(void *arg)			
 {
 	ll_t l1, l2, l3;
+	node_t *n1;
 	int x = 1, y = 85, z = 123;
 	float x_f = 1.121, y_f = 85.123, z_f = 999.21312;
 	double x_df = 17657.1345321, y_df = 851231.123, z_df = 9994565464.2546541312;
@@ -98,10 +99,20 @@ void *sync_routine(void *arg)
 			ll_delete(&l1, &y, int_comparator);
 			ll_print_list(&l1);
 			ll_add_end(&l1, &z);
+			
+			n1 = ll_search_node(&l1, &z, int_comparator);
+			printf("Node searched data: ");
+			print_int(n1->val);
+			
 			ll_print_list(&l1);
 			ll_add_end(&l1, &x);
 			ll_print_list(&l1);
 			ll_add_end(&l1, &y);
+			
+			n1 = ll_search_node(&l1, &y, int_comparator);
+			printf("Node searched data: ");
+			print_int(n1->val);
+			
 			ll_print_list(&l1);
 			ll_delete(&l1, &x, int_comparator);
 			ll_print_list(&l1);
@@ -110,11 +121,11 @@ void *sync_routine(void *arg)
 			ll_print_list(&l1);
 			ll_delete(&l1, &x, int_comparator);
 			ll_delete(&l1, &z, int_comparator);
+			print_int(n1->val);
 			ll_add_end(&l1, &y);
 			ll_add_end(&l1, &y);
 			ll_sort_list(&l1, int_comparator);
 			
-
 			ll_print_list(&l1);
 			ll_flush_list(&l1);
 			ll_print_list(&l1);
@@ -129,6 +140,14 @@ void *sync_routine(void *arg)
 			ll_print_list(&l2);
 			ll_sort_list(&l2, float_comparator);
 			ll_print_list(&l2);
+			
+			n1 = ll_search_node(&l2, &y_f, float_comparator);
+			printf("Node searched data: ");
+			print_float(n1->val);
+			n1 = ll_search_node(&l2, &z_f, float_comparator);
+			printf("Node searched data: ");
+			print_float(n1->val);
+			
 			ll_delete(&l2, &z_f, float_comparator);
 			
 			ll_print_list(&l2);
@@ -142,6 +161,14 @@ void *sync_routine(void *arg)
 			ll_add_end(&l3, &x_df);
 			ll_add_end(&l3, &y_df);
 			ll_add_end(&l3, &z_df);
+			
+			n1 = ll_search_node(&l3, &y_df, double_comparator);
+			printf("Node searched data: ");
+			print_double(n1->val);
+			n1 = ll_search_node(&l3, &z_df, double_comparator);
+			printf("Node searched data: ");
+			print_double(n1->val);
+			
 			ll_print_list(&l3);
 			ll_sort_list(&l3, double_comparator);
 			ll_print_list(&l3);
