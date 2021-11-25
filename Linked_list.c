@@ -7,20 +7,50 @@
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-pthread_barrier_t barrier;					//threads sync for creation using barrier
+pthread_barrier_t barrier;    //threads sync for creation using barrier
 int current = 0;
 
-int validation_fn(void *data) 
+int validation_fn(void *data)
 {
 	int int_data = *(int*)data;
-	
+
 	if (int_data < 0)
 		return -1;
-	
+
 	if (int_data > 9999)
 		return -1;
-		
+
 	return 0;
+}
+
+int int_comparator(void *first_argument, void *second_argument)
+{
+	if (*(int *)first_argument > *(int *)second_argument)
+		return 1;
+	if (*(int *)first_argument == *(int *)second_argument)
+		return 0;
+	else
+		return -1;
+}
+
+int float_comparator(void *first_argument, void *second_argument)
+{
+	if (*(float *)first_argument > *(float *)second_argument)
+		return 1;
+	if (*(float *)first_argument == *(float *)second_argument)
+		return 0;
+	else
+		return -1;
+}
+
+int double_comparator(void *first_argument, void *second_argument)
+{
+	if (*(double *)first_argument > *(double *)second_argument)
+		return 1;
+	if (*(double *)first_argument == *(double *)second_argument)
+		return 0;
+	else
+		return -1;
 }
 
 void print_int(void *element)
@@ -38,41 +68,68 @@ void print_double(void *element)
 	printf("%lf ", *(double *)element);
 }
 
-void *sync_routine(void *arg)				
-{	
+
+void *sync_routine(void *arg)			
+{
 	ll_t l1, l2, l3;
+	int x = 1, y = 85, z = 123;
+	float x_f = 1.121, y_f = 85.123, z_f = 999.21312;
+	double x_df = 17657.1345321, y_df = 851231.123, z_df = 9994565464.2546541312;
 	int internal_tid = *(int*) arg;
 	printf("Waiting at the barrier... Thread no: %d\n", internal_tid+1);
-	pthread_barrier_wait(&barrier);			//wait to create all threads before executing 
-	
+	pthread_barrier_wait(&barrier);    //wait to create all threads before executing 
+
 	pthread_mutex_lock(&lock);
 	printf("We passed the barrier! Thread no: %d\n", internal_tid+1);
 	pthread_mutex_unlock(&lock);
-	
+
 	pthread_mutex_lock(&lock);
 	while (internal_tid > current) {
 		pthread_cond_wait(&cond, &lock);	
 	}
-	
+
 	switch(internal_tid) {
 		case 0:
 			ll_create(&l1, print_int);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_add_end(&l1, &(int){2});
-			ll_add_end(&l1, &(int){4});
-			ll_delete(&l1, &(int){2});
+			ll_add_end(&l1, &x);
+			ll_add_end(&l1, &y);
+			ll_print_list(&l1);
+			ll_delete(&l1, &y, int_comparator);
+			ll_print_list(&l1);
+			ll_add_end(&l1, &z);
+			ll_print_list(&l1);
+			ll_add_end(&l1, &x);
+			ll_print_list(&l1);
+			ll_add_end(&l1, &y);
+			ll_print_list(&l1);
+			ll_delete(&l1, &x, int_comparator);
+			ll_print_list(&l1);
+			ll_delete(&l1, &x, int_comparator);
+			ll_delete(&l1, &y, int_comparator);
+			ll_print_list(&l1);
+			ll_delete(&l1, &x, int_comparator);
+			ll_delete(&l1, &z, int_comparator);
+			ll_add_end(&l1, &y);
+			ll_add_end(&l1, &y);
+			ll_sort_list(&l1, int_comparator);
 			
+
 			ll_print_list(&l1);
 			ll_flush_list(&l1);
 			ll_print_list(&l1);
 			break;
-			
+
 		case 1:
 			ll_create(&l2, print_float);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_add_end(&l2, &(float){11.0001});
-			ll_add_end(&l2, &(float){1.18});
-			ll_delete(&l2, &(float){1.18});
+			ll_add_end(&l2, &z_f);
+			ll_add_end(&l2, &x_f);
+			ll_add_end(&l2, &y_f);
+			ll_print_list(&l2);
+			ll_sort_list(&l2, float_comparator);
+			ll_print_list(&l2);
+			ll_delete(&l2, &z_f, float_comparator);
 			
 			ll_print_list(&l2);
 			ll_flush_list(&l2);
@@ -82,9 +139,13 @@ void *sync_routine(void *arg)
 		case 2:
 			ll_create(&l3, print_double);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_add_end(&l3, &(double){30.123215671231});
-			ll_add_end(&l3, &(double){25821.12341});
-			ll_delete(&l3, &(double){30.123215671231});
+			ll_add_end(&l3, &x_df);
+			ll_add_end(&l3, &y_df);
+			ll_add_end(&l3, &z_df);
+			ll_print_list(&l3);
+			ll_sort_list(&l3, double_comparator);
+			ll_print_list(&l3);
+			ll_delete(&l3, &z_df, double_comparator);
 			
 			ll_print_list(&l3);
 			ll_flush_list(&l3);
