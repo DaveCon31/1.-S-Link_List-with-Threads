@@ -39,6 +39,7 @@ void ll_add_end(ll_t *list, void *value)
 	node_t *new_node = malloc(sizeof(node_t));	
 	if (new_node == NULL) {
 		printf("Memory allocation for new_node failed! (add) \n");
+		return;
 	}
 	new_node->next = NULL;
 	new_node->val = value;
@@ -57,24 +58,25 @@ void ll_add_end(ll_t *list, void *value)
 }
 
 void ll_delete(ll_t *list, void *value)
-{	
+{
 	printf("delete function has been called!!!	");
-	if (validate_head(list, "delete") == -1) {    //VALIDATE WITH CALLBACK		
+	if (validate_head(list, "delete") == -1) {    //validate head list		
 		return;    
 	}
 	node_t *temp = list->head;
 	int count_element = 0, flag_delete = 0;
 	node_t *previous_node = NULL;
-	
+
 	if (list->head->val == value) {
 		list->head = temp->next;
-		free(temp);
 		printf("Node head with value: ");
 		list->print_val(temp->val); 
 		printf("deleted!\n");
+		free(temp);
+		list->last_node = NULL;    //correctly reset last_node in this corner case
 		return;
 	}
-	
+
 	while (temp != NULL) {
 		count_element++;
 		if (temp->val == value) {
@@ -82,22 +84,26 @@ void ll_delete(ll_t *list, void *value)
 			printf("with value: ");
 			list->print_val(temp->val); 
 			printf("deleted!\n");
-			previous_node->next = temp->next;
+			if (temp->next != NULL)
+				previous_node->next = temp->next;
+			else {
+				previous_node->next = NULL;
+				list->last_node = previous_node;    //correctly reset last_node in this corner case
+			}
+			
 			free(temp);
 			flag_delete = 1;
 		}
 		if (flag_delete == 1) {
-			break;    //deleting only 1 node (first found) if multiple nodes have the same value
+			return;    //deleting only 1 node (first found) if multiple nodes have the same value
 		}
 		previous_node = temp;
 		temp = temp->next;
 	}
 	
-	if (flag_delete == 0) {
-		printf("Node head with value: ");
-		list->print_val(value); 
-		printf("doesn't exist!\n");
-	}
+	printf("Node head with value: ");
+	list->print_val(value); 
+	printf("doesn't exist!\n");
 }
 
 void swap(node_t *a, node_t *b)    //used for sort_list
@@ -113,7 +119,7 @@ void ll_sort_list(ll_t *list)    //bubble sort
 	int swapped;
 	node_t *ptr2 = NULL;
 	node_t *ptr1;    //NULL?!
-	if (validate_head(list, "sort_list") == -1) {    //VALIDATE WITH CALLBACK
+	if (validate_head(list, "sort_list") == -1) {    //validate head list
 			return;
 	}
 	
@@ -136,7 +142,7 @@ void ll_sort_list(ll_t *list)    //bubble sort
 
 void ll_flush_list(ll_t *list)
 {
-	if (validate_head(list, "flush_list") == -1) {    //VALIDATE WITH CALLBACK
+	if (validate_head(list, "flush_list") == -1) {    //validate head list
 		return;
 	}
 	
@@ -153,7 +159,7 @@ void ll_print_list(ll_t *list)
 {	
 	printf("print_list function has been called!!!	");
 	printf("Printing linked list: ");
-	if (validate_head(list, "print_list") == -1) {    //VALIDATE WITH CALLBACK
+	if (validate_head(list, "print_list") == -1) {    //validate head list
 		return;
 	}
 	
