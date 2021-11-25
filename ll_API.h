@@ -10,8 +10,8 @@ typedef struct list {
 	node_t *head;
 	node_t *last_node;
 	void (*print_val)(void *val);
-} ll_t;    //ll_t as linked list data type    
-
+} ll_t;    //ll_t as linked list data type   
+ 
 //set validation data for input
 // callback should return 0 for success and -1 for failure
 void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data));
@@ -27,7 +27,7 @@ void ll_add_end(ll_t *list, void *value);
 void ll_delete(ll_t *list, void *value, int (*comparator)(void *first, void* second));
 
 //returns the address of node with specified data
-node_t *ll_search_node(ll_t *list, void *value);
+node_t *ll_search_node(ll_t *list, void *value, int (*comparator)(void *first, void* second));
 
 //sorting the list using bubble sort algorithm
 void ll_sort_list(ll_t *list, int (*comparator)(void *first, void* second));
