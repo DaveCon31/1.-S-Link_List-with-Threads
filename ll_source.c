@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "ll_API.h"
 
 int (*callback_validate)(void *data) = NULL;    //Validate data type; set by user
@@ -57,7 +58,7 @@ void ll_add_end(ll_t *list, void *value)
 	list->last_node = new_node;
 }
 
-void ll_delete(ll_t *list, void *value)
+void ll_delete(ll_t *list, void *value, int (*comparator)(void *first, void* second))
 {
 	printf("delete function has been called!!!	");
 	if (validate_head(list, "delete") == -1) {    //validate head list		
@@ -67,7 +68,7 @@ void ll_delete(ll_t *list, void *value)
 	int count_element = 0, flag_delete = 0;
 	node_t *previous_node = NULL;
 
-	if (list->head->val == value) {
+	if (comparator(list->head->val, value) == 0) {
 		list->head = temp->next;
 		printf("Node head with value: ");
 		list->print_val(temp->val); 
@@ -79,7 +80,7 @@ void ll_delete(ll_t *list, void *value)
 
 	while (temp != NULL) {
 		count_element++;
-		if (temp->val == value) {
+		if (comparator(temp->val, value) == 0) {
 			printf("Node no.%d ",count_element);
 			printf("with value: ");
 			list->print_val(temp->val); 
@@ -113,12 +114,12 @@ void swap(node_t *a, node_t *b)    //used for sort_list
 	b->val = temp;
 }
 
-void ll_sort_list(ll_t *list)    //bubble sort
+void ll_sort_list(ll_t *list, int (*comparator)(void *first, void* second))    //bubble sort
 {
 	printf("sort_list has been called!!!    ");
 	int swapped;
 	node_t *ptr2 = NULL;
-	node_t *ptr1;    //NULL?!
+	node_t *ptr1 = NULL;    //was uninitialized
 	if (validate_head(list, "sort_list") == -1) {    //validate head list
 			return;
 	}
@@ -128,7 +129,7 @@ void ll_sort_list(ll_t *list)    //bubble sort
 		ptr1 = list->head;
 		
 		while (ptr1->next != ptr2) {
-			if (ptr1->val > ptr1->next->val) {
+			if (comparator(ptr1->val, ptr1->next->val) == 1) {
 				swap(ptr1, ptr1->next);
 				swapped = 1;
 			}
