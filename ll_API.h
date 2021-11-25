@@ -19,15 +19,18 @@ void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data));
 //initialize linked list with last_node & head = NULL
 //MUST BE CALLED FOR EVERY NEW LIST CREATED OTHERWISE SEGFAULT
 void ll_create(ll_t *list, void (*print_val)(void *val));
-		
+
 //adds a node at the end of the list with a value
 void ll_add_end(ll_t *list, void *value);
 
 //removes the node with a value
-void ll_delete(ll_t *list, void *value);
+void ll_delete(ll_t *list, void *value, int (*comparator)(void *first, void* second));
+
+//returns the address of node with specified data
+node_t *ll_search_node(ll_t *list, void *value);
 
 //sorting the list using bubble sort algorithm
-void ll_sort_list(ll_t *list);
+void ll_sort_list(ll_t *list, int (*comparator)(void *first, void* second));
 
 //deletes entire list, deallocated everything
 void ll_flush_list(ll_t *list);
