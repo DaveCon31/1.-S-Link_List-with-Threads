@@ -3,7 +3,7 @@
 #include <string.h>
 #include "ll_API.h"
 
-#define NDEBUG    //disable/enable printfs (comment to enable printfs)
+//#define NDEBUG    //disable/enable printfs (comment to enable printfs)
 
 #ifdef NDEBUG
 #define DEBUG_PRINTF(...)
@@ -82,6 +82,7 @@ void ll_delete(ll_t *list, void *value, int (*comparator)(void *first, void* sec
 		list->print_val(temp->val); 
 		DEBUG_PRINTF("deleted!\n");
 		free(temp);
+		temp = NULL;    //safe free
 		list->last_node = NULL;    //correctly reset last_node in this corner case
 		return;
 	}
@@ -101,6 +102,7 @@ void ll_delete(ll_t *list, void *value, int (*comparator)(void *first, void* sec
 			}
 			
 			free(temp);
+			temp = NULL;    //safe free
 			flag_delete = 1;
 		}
 		if (flag_delete == 1) {
@@ -178,7 +180,8 @@ void ll_flush_list(ll_t *list)
 	while (list->head != NULL) {
 		temp = list->head;
 		list->head = list->head->next;
-		free(temp);	
+		free(temp);
+		temp = NULL;    //safe free
 	}
 	DEBUG_PRINTF("Linked list has been deleted!\n");
 }
