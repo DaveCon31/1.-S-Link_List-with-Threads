@@ -91,8 +91,8 @@ void *sync_routine(void *arg)
 
 	switch(internal_tid) {
 		case 0:
-			ll_create(&l1, print_int);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
+			ll_create(&l1, print_int);
 			ll_add_end(&l1, &x);
 			ll_add_end(&l1, &y);
 			ll_print_list(&l1);
@@ -132,8 +132,8 @@ void *sync_routine(void *arg)
 			break;
 
 		case 1:
-			ll_create(&l2, print_float);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
+			ll_create(&l2, print_float);
 			ll_add_end(&l2, &z_f);
 			ll_add_end(&l2, &x_f);
 			ll_add_end(&l2, &y_f);
@@ -156,8 +156,8 @@ void *sync_routine(void *arg)
 			break;
 		
 		case 2:
-			ll_create(&l3, print_double);
 			printf("\nThread: %d ===================== \n",internal_tid+1);
+			ll_create(&l3, print_double);
 			ll_add_end(&l3, &x_df);
 			ll_add_end(&l3, &y_df);
 			ll_add_end(&l3, &z_df);
@@ -184,7 +184,7 @@ void *sync_routine(void *arg)
 	pthread_cond_broadcast(&cond);
 	pthread_mutex_unlock(&lock);
 	free(arg);
-	printf("Thread exited?!\n");
+	printf("####Thread exited?!####\n");
 	return (void*)0;
 }
 	
