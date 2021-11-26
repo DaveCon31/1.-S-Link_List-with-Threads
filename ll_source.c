@@ -11,6 +11,12 @@
 #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #endif
 
+typedef struct my_ll {
+	node_t *head;
+	node_t *last_node;
+	void (*print_val)(void *val);
+} ll_t;    //ll_t as linked list data type
+
 int (*callback_validate)(void *data) = NULL;    //Validate data type; set by user
 
 int validate_head(ll_t *list, void *name)    //VALIDATE HEAD list
@@ -22,13 +28,15 @@ int validate_head(ll_t *list, void *name)    //VALIDATE HEAD list
 	return 0;
 }		
 
-void ll_create(ll_t* list, void (*ptr_print_val)(void *val)) 
+ll_t* ll_create(void (*ptr_print_val)(void *val)) 
 {
+	ll_t *list = malloc(sizeof(ll_t));
 	DEBUG_PRINTF("Creating linked list ...");
 	list->head = NULL;
 	list->last_node = NULL;
 	list->print_val = ptr_print_val;
-	DEBUG_PRINTF(" Created.\n"); 
+	DEBUG_PRINTF(" Created.\n");
+	return list;
 }
 
 void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data))
@@ -39,7 +47,6 @@ void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data))
 void ll_add_end(ll_t *list, void *value)
 {	
 	DEBUG_PRINTF("ll_add_end function has been called!!!	");
-	
 	if (callback_validate != NULL) {
 		if (callback_validate(value) != 0)
 			return;
@@ -203,4 +210,11 @@ void ll_print_list(ll_t *list)
 		}
 	}
 	DEBUG_PRINTF("\n");
+}
+
+void ll_destroy_list(ll_t *list)
+{
+	free(list);    //free list resources
+	list = NULL;
+	DEBUG_PRINTF("List has been deallocated!\n");
 }
