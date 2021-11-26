@@ -71,7 +71,7 @@ void print_double(void *element)
 
 void *sync_routine(void *arg)			
 {
-	ll_t l1, l2, l3;
+	ll_t *l1, *l2, *l3;
 	node_t *n1;
 	int x = 1, y = 85, z = 123;
 	float x_f = 1.121, y_f = 85.123, z_f = 999.21312;
@@ -92,91 +92,99 @@ void *sync_routine(void *arg)
 	switch(internal_tid) {
 		case 0:
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_create(&l1, print_int);
-			ll_add_end(&l1, &x);
-			ll_add_end(&l1, &y);
-			ll_print_list(&l1);
-			ll_delete(&l1, &y, int_comparator);
-			ll_print_list(&l1);
-			ll_add_end(&l1, &z);
+			l1 = ll_create(print_int);
+			ll_add_end(l1, &x);
+			ll_add_end(l1, &y);
+			ll_print_list(l1);
+			ll_delete(l1, &y, int_comparator);
+			ll_print_list(l1);
+			ll_add_end(l1, &z);
 			
-			n1 = ll_search_node(&l1, &z, int_comparator);
+			n1 = ll_search_node(l1, &z, int_comparator);
 			printf("Node searched data: ");
 			print_int(n1->val);
+			printf("\n");
 			
-			ll_print_list(&l1);
-			ll_add_end(&l1, &x);
-			ll_print_list(&l1);
-			ll_add_end(&l1, &y);
+			ll_print_list(l1);
+			ll_add_end(l1, &x);
+			ll_print_list(l1);
+			ll_add_end(l1, &y);
 			
-			n1 = ll_search_node(&l1, &y, int_comparator);
+			n1 = ll_search_node(l1, &y, int_comparator);
 			printf("Node searched data: ");
 			print_int(n1->val);
+			printf("\n");
 			
-			ll_print_list(&l1);
-			ll_delete(&l1, &x, int_comparator);
-			ll_print_list(&l1);
-			ll_delete(&l1, &x, int_comparator);
-			ll_delete(&l1, &y, int_comparator);
-			ll_print_list(&l1);
-			ll_delete(&l1, &x, int_comparator);
-			ll_delete(&l1, &z, int_comparator);
-			print_int(n1->val);
-			ll_add_end(&l1, &y);
-			ll_add_end(&l1, &y);
-			ll_sort_list(&l1, int_comparator);
+			ll_print_list(l1);
+			ll_delete(l1, &x, int_comparator);
+			ll_print_list(l1);
+			ll_delete(l1, &x, int_comparator);
+			ll_delete(l1, &y, int_comparator);
+			ll_print_list(l1);
+			ll_delete(l1, &x, int_comparator);
+			ll_delete(l1, &z, int_comparator);
+			ll_add_end(l1, &y);
+			ll_add_end(l1, &y);
+			ll_sort_list(l1, int_comparator);
 			
-			ll_print_list(&l1);
-			ll_flush_list(&l1);
-			ll_print_list(&l1);
+			ll_print_list(l1);
+			ll_flush_list(l1);
+			ll_print_list(l1);
+			ll_destroy_list(l1);
+			
 			break;
 
 		case 1:
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_create(&l2, print_float);
-			ll_add_end(&l2, &z_f);
-			ll_add_end(&l2, &x_f);
-			ll_add_end(&l2, &y_f);
-			ll_print_list(&l2);
-			ll_sort_list(&l2, float_comparator);
-			ll_print_list(&l2);
+			l2 = ll_create(print_float);
+			ll_add_end(l2, &z_f);
+			ll_add_end(l2, &x_f);
+			ll_add_end(l2, &y_f);
+			ll_print_list(l2);
+			ll_sort_list(l2, float_comparator);
+			ll_print_list(l2);
 			
-			n1 = ll_search_node(&l2, &y_f, float_comparator);
+			n1 = ll_search_node(l2, &y_f, float_comparator);
 			printf("Node searched data: ");
 			print_float(n1->val);
-			n1 = ll_search_node(&l2, &z_f, float_comparator);
+			printf("\n");
+			n1 = ll_search_node(l2, &z_f, float_comparator);
 			printf("Node searched data: ");
 			print_float(n1->val);
 			
-			ll_delete(&l2, &z_f, float_comparator);
+			ll_delete(l2, &z_f, float_comparator);
 			
-			ll_print_list(&l2);
-			ll_flush_list(&l2);
-			ll_print_list(&l2);
+			ll_print_list(l2);
+			ll_flush_list(l2);
+			ll_print_list(l2);
+			ll_destroy_list(l2);
 			break;
 		
 		case 2:
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			ll_create(&l3, print_double);
-			ll_add_end(&l3, &x_df);
-			ll_add_end(&l3, &y_df);
-			ll_add_end(&l3, &z_df);
+			l3 = ll_create(print_double);
+			ll_add_end(l3, &x_df);
+			ll_add_end(l3, &y_df);
+			ll_add_end(l3, &z_df);
 			
-			n1 = ll_search_node(&l3, &y_df, double_comparator);
+			n1 = ll_search_node(l3, &y_df, double_comparator);
 			printf("Node searched data: ");
 			print_double(n1->val);
-			n1 = ll_search_node(&l3, &z_df, double_comparator);
+			printf("\n");
+			n1 = ll_search_node(l3, &z_df, double_comparator);
 			printf("Node searched data: ");
 			print_double(n1->val);
+			printf("\n");
 			
-			ll_print_list(&l3);
-			ll_sort_list(&l3, double_comparator);
-			ll_print_list(&l3);
-			ll_delete(&l3, &z_df, double_comparator);
+			ll_print_list(l3);
+			ll_sort_list(l3, double_comparator);
+			ll_print_list(l3);
+			ll_delete(l3, &z_df, double_comparator);
 			
-			ll_print_list(&l3);
-			ll_flush_list(&l3);
-			ll_print_list(&l3);
+			ll_print_list(l3);
+			ll_flush_list(l3);
+			ll_print_list(l3);
+			ll_destroy_list(l3);
 			break;
 	}
 	
@@ -184,7 +192,7 @@ void *sync_routine(void *arg)
 	pthread_cond_broadcast(&cond);
 	pthread_mutex_unlock(&lock);
 	free(arg);
-	printf("####Thread exited?!####\n");
+	printf("####Thread exited?!#####\n");
 	return (void*)0;
 }
 	
@@ -216,9 +224,6 @@ int main()
 	pthread_cond_destroy(&cond);
 	
 	printf("\n----------------------------\nThreads executions finished!\n");
-	/*ll_print_list();
-	ll_flush_list();
-	ll_print_list();*/
 	return 0;
 }
 
