@@ -73,7 +73,7 @@ void *sync_routine(void *arg)
 {
 	ll_t *l1, *l2, *l3;
 	node_t *n1;
-	int x = 1, y = 85, z = 123;
+	int x = 1, y = 85, z = 123, not = 1111;
 	float x_f = 1.121, y_f = 85.123, z_f = 999.21312;
 	double x_df = 17657.1345321, y_df = 851231.123, z_df = 9994565464.2546541312;
 	int internal_tid = *(int*) arg;
@@ -92,99 +92,121 @@ void *sync_routine(void *arg)
 	switch(internal_tid) {
 		case 0:
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			l1 = ll_create(print_int);
+			l1 = ll_create(print_int, int_comparator);
+			ll_add_end(l1, &x);
+			ll_delete(l1, &x);
+			ll_print_list(l1);
+			ll_delete(l1, &x);
+		
 			ll_add_end(l1, &x);
 			ll_add_end(l1, &y);
 			ll_print_list(l1);
-			ll_delete(l1, &y, int_comparator);
+			ll_delete(l1, &y);
 			ll_print_list(l1);
+			
+			ll_add_end(l1, &x);
+			ll_delete(l1, &not);
+			ll_print_list(l1);
+			
+			ll_add_end(l1, &y);
+			ll_add_end(l1, &y);
 			ll_add_end(l1, &z);
-			
-			n1 = ll_search_node(l1, &z, int_comparator);
-			printf("Node searched data: ");
-			print_int(n1->val);
-			printf("\n");
+			ll_print_list(l1);
+			ll_delete(l1, &y);
+			ll_print_list(l1);
+			ll_delete(l1, &y);
 			
 			ll_print_list(l1);
+			ll_delete(l1, &z);	
+			ll_print_list(l1);
+			ll_delete(l1, &x);
+			ll_add_end(l1, &z);
+			ll_print_list(l1);
+			ll_delete(l1, &z);	
+			ll_print_list(l1);
+			ll_delete(l1, &x);
+			
+			ll_add_end(l1, &x);
+			ll_add_end(l1, &y);
+			ll_add_end(l1, &z);
 			ll_add_end(l1, &x);
 			ll_print_list(l1);
-			ll_add_end(l1, &y);
+			ll_delete(l1, &x);
+			ll_print_list(l1);
+			ll_flush_list(l1);
 			
-			n1 = ll_search_node(l1, &y, int_comparator);
-			printf("Node searched data: ");
-			print_int(n1->val);
-			printf("\n");
-			
-			ll_print_list(l1);
-			ll_delete(l1, &x, int_comparator);
-			ll_print_list(l1);
-			ll_delete(l1, &x, int_comparator);
-			ll_delete(l1, &y, int_comparator);
-			ll_print_list(l1);
-			ll_delete(l1, &x, int_comparator);
-			ll_delete(l1, &z, int_comparator);
+			ll_add_end(l1, &x);
 			ll_add_end(l1, &y);
+			ll_add_end(l1, &z);
+			ll_add_end(l1, &x);
+			ll_print_list(l1);
+			ll_delete(l1, &y);
+			ll_print_list(l1);
 			ll_add_end(l1, &y);
-			ll_sort_list(l1, int_comparator);
+			ll_print_list(l1);
+			ll_delete(l1, &y);
+			ll_print_list(l1);
 			
 			ll_print_list(l1);
 			ll_flush_list(l1);
 			ll_print_list(l1);
-			ll_destroy_list(l1);
+			ll_destroy_list(&l1);
+			ll_print_list(l1);
 			
 			break;
 
 		case 1:
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			l2 = ll_create(print_float);
+			l2 = ll_create(print_float, float_comparator);
 			ll_add_end(l2, &z_f);
 			ll_add_end(l2, &x_f);
 			ll_add_end(l2, &y_f);
 			ll_print_list(l2);
-			ll_sort_list(l2, float_comparator);
+			ll_sort_list(l2);
 			ll_print_list(l2);
 			
-			n1 = ll_search_node(l2, &y_f, float_comparator);
+			n1 = ll_search_node(l2, &y_f);
 			printf("Node searched data: ");
 			print_float(n1->val);
 			printf("\n");
-			n1 = ll_search_node(l2, &z_f, float_comparator);
+			n1 = ll_search_node(l2, &z_f);
 			printf("Node searched data: ");
 			print_float(n1->val);
 			
-			ll_delete(l2, &z_f, float_comparator);
+			ll_delete(l2, &z_f);
 			
 			ll_print_list(l2);
-			ll_flush_list(l2);
 			ll_print_list(l2);
-			ll_destroy_list(l2);
+			//ll_flush_list(l2);
+			ll_destroy_list(&l2);
+			
 			break;
 		
 		case 2:
 			printf("\nThread: %d ===================== \n",internal_tid+1);
-			l3 = ll_create(print_double);
+			l3 = ll_create(print_double, double_comparator);
 			ll_add_end(l3, &x_df);
 			ll_add_end(l3, &y_df);
 			ll_add_end(l3, &z_df);
 			
-			n1 = ll_search_node(l3, &y_df, double_comparator);
+			n1 = ll_search_node(l3, &x_df);
 			printf("Node searched data: ");
 			print_double(n1->val);
 			printf("\n");
-			n1 = ll_search_node(l3, &z_df, double_comparator);
+			n1 = ll_search_node(l3, &z_df);
 			printf("Node searched data: ");
 			print_double(n1->val);
 			printf("\n");
 			
 			ll_print_list(l3);
-			ll_sort_list(l3, double_comparator);
+			ll_sort_list(l3);
 			ll_print_list(l3);
-			ll_delete(l3, &z_df, double_comparator);
+			ll_delete(l3, &z_df);
 			
 			ll_print_list(l3);
-			ll_flush_list(l3);
+			//ll_flush_list(l3);
 			ll_print_list(l3);
-			ll_destroy_list(l3);
+			ll_destroy_list(&l3);
 			break;
 	}
 	
