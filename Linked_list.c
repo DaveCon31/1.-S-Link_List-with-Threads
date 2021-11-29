@@ -166,11 +166,9 @@ void *sync_routine(void *arg)
 			ll_print_list(l2);
 			
 			n1 = ll_search_node(l2, &y_f);
-			printf("Node searched data: ");
 			print_float(n1->val);
 			printf("\n");
 			n1 = ll_search_node(l2, &z_f);
-			printf("Node searched data: ");
 			print_float(n1->val);
 			
 			ll_delete(l2, &z_f);
@@ -190,11 +188,9 @@ void *sync_routine(void *arg)
 			ll_add_end(l3, &z_df);
 			
 			n1 = ll_search_node(l3, &x_df);
-			printf("Node searched data: ");
 			print_double(n1->val);
 			printf("\n");
 			n1 = ll_search_node(l3, &z_df);
-			printf("Node searched data: ");
 			print_double(n1->val);
 			printf("\n");
 			
