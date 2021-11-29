@@ -18,12 +18,11 @@ typedef struct my_ll {
 
 int (*callback_validate)(void *data) = NULL;    //Validate data type; set by user
 
-int validate_head(ll_t *list, void *name)    //VALIDATE HEAD list
+int validate_head(ll_t *list)    //VALIDATE HEAD list
 {
 	if (list == NULL)
 		return -1;
 	if (list->head == NULL) {
-		DEBUG_PRINTF("Linked list is empty! (%s)\n", (const char*)name);
 		return -1;
 	}
 	return 0;
@@ -71,34 +70,23 @@ void ll_add_end(ll_t *list, void *value)
 	}
 	
 	list->tail = new_node;
-	DEBUG_PRINTF("Node added!\n");
 }
 
 void ll_delete(ll_t *list, void *value)
 {
-	if (validate_head(list, "ll_delete") == -1) {
+	if (validate_head(list) == -1)
 		return;
-	}
 	
 	node_t *temp = list->head;
 	node_t *prev = NULL;
 	while (temp != NULL) {
 		if (list->comparator(temp->val, value) == 0) {
-			if (list->head == list->tail) {
-				list->tail = NULL;
-				list->head = NULL;
-				break;
-			}
-			if (temp == list->head) {
+			if (temp == list->head)
 				list->head = list->head->next;
-				break;
-			}
-			if (temp == list->tail) {
+			if (temp == list->tail)
 				list->tail = prev;
-				list->tail->next = NULL;
-				break;
-			}
-			prev->next = temp->next;
+			if (prev != NULL)
+				prev->next = temp->next;
 			break;
 		}
 		prev = temp;
@@ -110,19 +98,16 @@ void ll_delete(ll_t *list, void *value)
 
 node_t *ll_search_node(ll_t *list, void *value)
 {
-	if (validate_head(list, "ll_search_node") == -1) {    //validate head list		
+	if (validate_head(list) == -1)    //validate head list		
 		return NULL;
-	}
+
 	
 	node_t *temp = list->head;
 	while (temp != NULL) {
-		if (list->comparator(temp->val, value) == 0) {
-			DEBUG_PRINTF("Node found!\n");
+		if (list->comparator(temp->val, value) == 0) 
 			return temp;		
-		}
 		temp = temp->next;
 	}
-	DEBUG_PRINTF("Node not found! Returning NULL.\n");
 	return NULL;
 }
 
@@ -138,9 +123,8 @@ void ll_sort_list(ll_t *list)    //bubble sort
 	int swapped;
 	node_t *ptr2 = NULL;
 	node_t *ptr1 = NULL;    //was uninitialized
-	if (validate_head(list, "ll_sort_list") == -1) {    //validate head list
+	if (validate_head(list) == -1)    //validate head list
 			return;
-	}
 	
 	do {
 		swapped = 0;
@@ -156,30 +140,26 @@ void ll_sort_list(ll_t *list)    //bubble sort
 		ptr2 = ptr1;
 	}
 	while (swapped);
-	DEBUG_PRINTF("Linked list has been sorted! \n");
 }
 
 void ll_flush_list(ll_t *list)
 {
-	if (validate_head(list, "ll_flush_list") == -1) {    //validate head list
+	if (validate_head(list) == -1)    //validate head list
 		return;
-	}
 	
 	node_t *temp = NULL;	
 	while (list->head != NULL) {
 		temp = list->head;
 		list->head = list->head->next;
 		free(temp);
-		temp = NULL;    //safe free
 	}
-	DEBUG_PRINTF("Linked list has been deleted!\n");
+	list->tail = NULL;
 }
 
 void ll_print_list(ll_t *list)
 {	
-	if (validate_head(list, "ll_print_list") == -1) {    //validate head list
+	if (validate_head(list) == -1)    //validate head list
 		return;
-	}
 	
 	node_t *temp = list->head;
 	while (temp != NULL) {
@@ -197,5 +177,4 @@ void ll_destroy_list(ll_t **list)
 	ll_flush_list(*list);
 	free(*list);    //free list resources
 	*list = NULL;
-	DEBUG_PRINTF("List has been deallocated!\n");
 }
