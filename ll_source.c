@@ -3,8 +3,6 @@
 #include <string.h>
 #include "ll_API.h"
 
-//#define NDEBUG    //disable/enable printfs (comment to enable printfs)
-
 #ifdef NDEBUG
 #define DEBUG_PRINTF(...)
 #else
@@ -13,14 +11,17 @@
 
 typedef struct my_ll {
 	node_t *head;
-	node_t *last_node;
+	node_t *tail;
+	int (*comparator)(void *first, void* second);
 	void (*print_val)(void *val);
 } ll_t;    //ll_t as linked list data type
 
 int (*callback_validate)(void *data) = NULL;    //Validate data type; set by user
 
 int validate_head(ll_t *list, void *name)    //VALIDATE HEAD list
-{   
+{
+	if (list == NULL)
+		return -1;
 	if (list->head == NULL) {
 		DEBUG_PRINTF("Linked list is empty! (%s)\n", (const char*)name);
 		return -1;
@@ -28,14 +29,17 @@ int validate_head(ll_t *list, void *name)    //VALIDATE HEAD list
 	return 0;
 }		
 
-ll_t* ll_create(void (*ptr_print_val)(void *val)) 
+ll_t* ll_create(void (*ptr_print_val)(void *val), int (*ptr_comparator)(void *first, void* second)) 
 {
 	ll_t *list = malloc(sizeof(ll_t));
-	DEBUG_PRINTF("Creating linked list ...");
+	if (list == NULL) {
+		DEBUG_PRINTF("Memory allocation for list failed!\n");
+	}
+	
 	list->head = NULL;
-	list->last_node = NULL;
+	list->tail = NULL;
 	list->print_val = ptr_print_val;
-	DEBUG_PRINTF(" Created.\n");
+	list->comparator = ptr_comparator;
 	return list;
 }
 
@@ -46,7 +50,6 @@ void ll_set_data_validation_callback(int (*ptr_callback_validate)(void *data))
 
 void ll_add_end(ll_t *list, void *value)
 {	
-	DEBUG_PRINTF("ll_add_end function has been called!!!	");
 	if (callback_validate != NULL) {
 		if (callback_validate(value) != 0)
 			return;
@@ -63,77 +66,57 @@ void ll_add_end(ll_t *list, void *value)
 	if (list->head == NULL) {			
 		list->head = new_node;    //set first node as head if linked list is empty
 	}
-	if (list->last_node != NULL) {    
-		list->last_node->next = new_node;    //link new_node with last node if linked list is not empty
+	if (list->tail != NULL) {   
+		list->tail->next = new_node;    //link new_node with last node if linked list is not empty
 	}
 	
-	DEBUG_PRINTF("Node with value: ");
-	list->print_val(new_node->val);
-	DEBUG_PRINTF(" added!\n");
-	list->last_node = new_node;
+	list->tail = new_node;
+	DEBUG_PRINTF("Node added!\n");
 }
 
-void ll_delete(ll_t *list, void *value, int (*comparator)(void *first, void* second))
+void ll_delete(ll_t *list, void *value)
 {
-	DEBUG_PRINTF("ll_delete function has been called!!!	");
-	if (validate_head(list, "ll_delete") == -1) {    //validate head list		
-		return;    
-	}
-	node_t *temp = list->head;
-	int count_element = 0, flag_delete = 0;
-	node_t *previous_node = NULL;
-
-	if (comparator(list->head->val, value) == 0) {
-		list->head = temp->next;
-		DEBUG_PRINTF("Node head with value: ");
-		list->print_val(temp->val); 
-		DEBUG_PRINTF("deleted!\n");
-		free(temp);
-		temp = NULL;    //safe free
-		list->last_node = NULL;    //correctly reset last_node in this corner case
+	if (validate_head(list, "ll_delete") == -1) {
 		return;
 	}
-
+	
+	node_t *temp = list->head;
+	node_t *prev = NULL;
 	while (temp != NULL) {
-		count_element++;
-		if (comparator(temp->val, value) == 0) {
-			DEBUG_PRINTF("Node no.%d ",count_element);
-			DEBUG_PRINTF("with value: ");
-			list->print_val(temp->val); 
-			DEBUG_PRINTF("deleted!\n");
-			if (temp->next != NULL)
-				previous_node->next = temp->next;
-			else {
-				previous_node->next = NULL;
-				list->last_node = previous_node;    //correctly reset last_node in this corner case
+		if (list->comparator(temp->val, value) == 0) {
+			if (list->head == list->tail) {
+				list->tail = NULL;
+				list->head = NULL;
+				break;
 			}
-			
-			free(temp);
-			temp = NULL;    //safe free
-			flag_delete = 1;
+			if (temp == list->head) {
+				list->head = list->head->next;
+				break;
+			}
+			if (temp == list->tail) {
+				list->tail = prev;
+				list->tail->next = NULL;
+				break;
+			}
+			prev->next = temp->next;
+			break;
 		}
-		if (flag_delete == 1) {
-			return;    //deleting only 1 node (first found) if multiple nodes have the same value
-		}
-		previous_node = temp;
+		prev = temp;
 		temp = temp->next;
 	}
-	
-	DEBUG_PRINTF("Node head with value: ");
-	list->print_val(value); 
-	DEBUG_PRINTF("doesn't exist!\n");
+	free(temp);
+	temp = NULL;
 }
 
-node_t *ll_search_node(ll_t *list, void *value, int (*comparator)(void *first, void* second))
+node_t *ll_search_node(ll_t *list, void *value)
 {
-	DEBUG_PRINTF("ll_search_node function has been called!!!	");
 	if (validate_head(list, "ll_search_node") == -1) {    //validate head list		
 		return NULL;
 	}
 	
 	node_t *temp = list->head;
 	while (temp != NULL) {
-		if (comparator(temp->val, value) == 0) {
+		if (list->comparator(temp->val, value) == 0) {
 			DEBUG_PRINTF("Node found!\n");
 			return temp;		
 		}
@@ -150,9 +133,8 @@ void swap(node_t *a, node_t *b)    //used for sort_list
 	b->val = temp;
 }
 
-void ll_sort_list(ll_t *list, int (*comparator)(void *first, void* second))    //bubble sort
+void ll_sort_list(ll_t *list)    //bubble sort
 {
-	DEBUG_PRINTF("sort_list has been called!!!    ");
 	int swapped;
 	node_t *ptr2 = NULL;
 	node_t *ptr1 = NULL;    //was uninitialized
@@ -165,7 +147,7 @@ void ll_sort_list(ll_t *list, int (*comparator)(void *first, void* second))    /
 		ptr1 = list->head;
 		
 		while (ptr1->next != ptr2) {
-			if (comparator(ptr1->val, ptr1->next->val) == 1) {
+			if (list->comparator(ptr1->val, ptr1->next->val) == 1) {
 				swap(ptr1, ptr1->next);
 				swapped = 1;
 			}
@@ -195,8 +177,6 @@ void ll_flush_list(ll_t *list)
 
 void ll_print_list(ll_t *list)
 {	
-	DEBUG_PRINTF("print_list function has been called!!!	");
-	DEBUG_PRINTF("Printing linked list: ");
 	if (validate_head(list, "ll_print_list") == -1) {    //validate head list
 		return;
 	}
@@ -212,9 +192,10 @@ void ll_print_list(ll_t *list)
 	DEBUG_PRINTF("\n");
 }
 
-void ll_destroy_list(ll_t *list)
+void ll_destroy_list(ll_t **list)
 {
-	free(list);    //free list resources
-	list = NULL;
+	ll_flush_list(*list);
+	free(*list);    //free list resources
+	*list = NULL;
 	DEBUG_PRINTF("List has been deallocated!\n");
 }
