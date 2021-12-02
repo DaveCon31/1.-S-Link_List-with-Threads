@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+
 #include "ll_API.h"
 
 #define NUM_THREADS 3
@@ -80,11 +81,11 @@ void *sync_routine(void *arg)
 	printf("Waiting at the barrier... Thread no: %d\n", internal_tid+1);
 	pthread_barrier_wait(&barrier);    //wait to create all threads before executing 
 
-	pthread_mutex_lock(&lock);
+	//pthread_mutex_lock(&lock);
 	printf("We passed the barrier! Thread no: %d\n", internal_tid+1);
-	pthread_mutex_unlock(&lock);
+	//pthread_mutex_unlock(&lock);
 
-	pthread_mutex_lock(&lock);
+	//pthread_mutex_lock(&lock);
 	while (internal_tid > current) {
 		pthread_cond_wait(&cond, &lock);	
 	}
@@ -145,9 +146,10 @@ void *sync_routine(void *arg)
 			ll_add_end(l1, &y);
 			ll_print_list(l1);
 			ll_delete(l1, &y);
-			ll_print_list(l1);
 			
 			ll_print_list(l1);
+			ll_print_list(l1);
+			
 			ll_flush_list(l1);
 			ll_print_list(l1);
 			ll_destroy_list(&l1);
